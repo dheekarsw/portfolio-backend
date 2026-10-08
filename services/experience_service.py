@@ -103,11 +103,11 @@ async def upload_certificate(
     file_content = await certificate.read()
 
     # filename untuk memberikan .pdf agar di cloudinary ada format pdf nya, cek settingan di history chat "Upload PDF Cloudinary FastAPI"
-    filename = certificate.filename or "certificate"
+    # filename = certificate.filename or "certificate"
 
     return upload_file(
         file_content=file_content,
-        public_id=f"{public_id}.{filename.rsplit('.', 1)[1]}",
+        public_id=public_id,
         folder="certificate"
     )
 
@@ -263,7 +263,6 @@ async def get_experience(
         )
     }
 
-
 async def update_experience(
     experience_id: str,
 
@@ -325,31 +324,11 @@ async def update_experience(
             "public_id"
         ]
 
-
-        try:
-            await experience.save()
-
-        except Exception as e:
-
-            try:
-                delete_file(
-                    new_photo["public_id"],
-                    resource_type="image"
-                )
-            except Exception:
-                pass
-
-            raise HTTPException(
-                status_code=500,
-                detail=f"Failed to update experience: {str(e)}"
-            )
-
-
         if old_photo:
+
             try:
                 delete_file(
-                    old_photo,
-                    resource_type="image"
+                    old_photo
                 )
             except Exception:
                 pass
@@ -375,43 +354,26 @@ async def update_experience(
         )
 
 
-        try:
-            await experience.save()
-
-        except Exception as e:
-
-            try:
-                delete_file(
-                    new_certificate["public_id"],
-                    resource_type="raw"
-                )
-            except Exception:
-                pass
-
-            raise HTTPException(
-                status_code=500,
-                detail=f"Failed to update experience: {str(e)}"
-            )
-
-
         if old_certificate:
+
             try:
                 delete_file(
-                    old_certificate,
-                    resource_type="raw"
+                    old_certificate
                 )
             except Exception:
                 pass
 
 
     # ---------------------------------
-    # Save text/date/location changes
+    # Save changes
     # ---------------------------------
 
     try:
+
         await experience.save()
 
     except Exception as e:
+
         raise HTTPException(
             status_code=500,
             detail=f"Failed to update experience: {str(e)}"
@@ -424,6 +386,7 @@ async def update_experience(
             experience
         )
     }
+
 
 
 async def delete_experience(

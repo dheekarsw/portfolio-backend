@@ -105,7 +105,7 @@ async def upload_certificate(
     return upload_file(
         file_content=file_content,
         public_id=public_id,
-        resource_type="raw"
+        folder="certificate"
     )
 
 
@@ -298,8 +298,7 @@ async def update_project(
 
             try:
                 delete_file(
-                    old_photo,
-                    resource_type="image"
+                    old_photo
                 )
             except Exception:
                 pass
@@ -325,8 +324,7 @@ async def update_project(
 
             try:
                 delete_file(
-                    old_certificate,
-                    resource_type="raw"
+                    old_certificate
                 )
             except Exception:
                 pass
@@ -350,6 +348,7 @@ async def update_project(
             project
         )
     }
+
 
 
 async def delete_project(
@@ -419,8 +418,7 @@ def serialize_project(
     if project.certificate_public_id:
 
         certificate_url = get_file_url(
-            project.certificate_public_id,
-            resource_type="raw"
+            project.certificate_public_id
         )
 
 
